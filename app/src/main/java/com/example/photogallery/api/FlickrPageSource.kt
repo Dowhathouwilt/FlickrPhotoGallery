@@ -9,7 +9,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 import okhttp3.Dispatcher
 import java.io.IOException
-//response.isEmpty() or (response.size < params.loadSize)
+
 private const val STARTING_PAGE = 1
 class FlickrPageSource(
     private val flickrApi:FlickrApi,
