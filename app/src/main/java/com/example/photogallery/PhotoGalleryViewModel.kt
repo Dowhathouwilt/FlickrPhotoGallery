@@ -19,6 +19,10 @@ class PhotoGalleryViewModel:ViewModel() {
     private val _uiState: MutableStateFlow<PhotoGalleryUiState> = MutableStateFlow(PhotoGalleryUiState())
     val uiState: StateFlow<PhotoGalleryUiState>
         get() = _uiState.asStateFlow()
+    private val _searchedQueries: MutableStateFlow<Set<String>> = MutableStateFlow(emptySet())
+    val searchedQueries
+    get() = _searchedQueries.asStateFlow()
+
 
     init {
         viewModelScope.launch{
@@ -38,7 +42,9 @@ class PhotoGalleryViewModel:ViewModel() {
                 catch (ex: Exception) {
                     Log.e(TAG, "Failed to fetch  items", ex)
                 }
-
+            }
+            preferencesRepository.searchedQueries.collectLatest { searchedQueries ->
+                _searchedQueries.value = searchedQueries
             }
         }
     }

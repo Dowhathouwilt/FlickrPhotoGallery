@@ -2,10 +2,7 @@ package com.example.photogallery
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStoreFile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,14 +15,33 @@ class PreferencesRepository private constructor(
         it[SEARCH_QUERY_KEY] ?: ""
     }.distinctUntilChanged()
 
+    val searchedQueries: Flow<Set<String>> = dataStore.data.map {
+        it[SEARCH_QUERIES_KEY]?: emptySet()
+    }.distinctUntilChanged()
+
+    val lastResultId: Flow<String> = dataStore.data.map {
+        it[PREF_LAST_RESULT_ID] ?: ""
+    }.distinctUntilChanged()
+
+
     suspend fun setStoredQuery(query: String) {
         dataStore.edit {
             it[SEARCH_QUERY_KEY] = query
+            val searchedQueries:Set<String> = it[SEARCH_QUERIES_KEY]?: emptySet()
+            it[SEARCH_QUERIES_KEY] = searchedQueries.plusElement(query)
+        }
+    }
+
+    suspend fun setLastResultId(lastResultId: String) {
+        dataStore.edit {
+            it[PREF_LAST_RESULT_ID] = lastResultId
         }
     }
 
     companion object {
         private val SEARCH_QUERY_KEY = stringPreferencesKey("search_query")
+        private val PREF_LAST_RESULT_ID = stringPreferencesKey("lastResultId")
+        private val SEARCH_QUERIES_KEY = stringSetPreferencesKey("searched_queries")
         private var INSTANCE: PreferencesRepository? = null
         fun initialize(context: Context) {
             if (INSTANCE == null) {
