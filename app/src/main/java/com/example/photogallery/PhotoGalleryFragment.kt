@@ -1,6 +1,7 @@
 package com.example.photogallery
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
@@ -24,7 +25,12 @@ import kotlinx.coroutines.launch
 class PhotoGalleryFragment:Fragment() {
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
     private var _binding: FragmentPhotoGalleryBinding? = null
-    private val adapter by lazy { PhotoListAdapter() }
+    private val adapter by lazy {
+        PhotoListAdapter{ photoPageUri ->
+            val intent = Intent(Intent.ACTION_VIEW, photoPageUri)
+            startActivity(intent)
+        }
+    }
     private val footerAdapter = PagingLoadStateAdapter()
     private var searchView:SearchView? = null
     private val binding
