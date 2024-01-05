@@ -1,5 +1,6 @@
 package com.example.photogallery
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingData
@@ -11,17 +12,20 @@ import com.example.photogallery.api.GalleryItem
 import com.example.photogallery.databinding.ListItemGalleryBinding
 
 class PhotoViewHolder(private val binding:ListItemGalleryBinding):RecyclerView.ViewHolder(binding.root){
-    fun bind(galleryItem: GalleryItem){
+    fun bind(galleryItem: GalleryItem, onItemClicked: (Uri) -> Unit){
         binding.itemImageView.load(galleryItem.url){
             placeholder(R.drawable.ic_launcher_background)
+        }
+        binding.root.setOnClickListener {
+            onItemClicked(galleryItem.photoPageUri)
         }
     }
 }
 
-class PhotoListAdapter: PagingDataAdapter<GalleryItem, PhotoViewHolder>(COMPARATOR){
+class PhotoListAdapter (private val onItemClicked: (Uri) -> Unit): PagingDataAdapter<GalleryItem, PhotoViewHolder>(COMPARATOR){
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item:GalleryItem? = getItem(position)
-        holder.bind(checkNotNull(item))
+        holder.bind(checkNotNull(item), onItemClicked)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {

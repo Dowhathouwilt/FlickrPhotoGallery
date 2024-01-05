@@ -59,8 +59,7 @@ class Worker(
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
-
-
+        
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
