@@ -62,11 +62,6 @@ class Worker(
         
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    context as Activity,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    RQ_PERMISSION_FOR_NOTIFICATION
-                    )
             return
         }
         NotificationManagerCompat.from(context).notify(0, notification)
